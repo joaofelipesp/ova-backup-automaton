@@ -51,8 +51,6 @@ def getVmList():
 	vmListRaw = json.loads(response.text)
 	vmList = []
 
-	with open("next_vms_list.txt", "+w") as f: pass
-
 	for vm in vmListRaw["entities"]:
 		try:
 			uuid = vm['metadata']['uuid']
@@ -62,8 +60,9 @@ def getVmList():
 			print(f"Warning: Skipping VM due to missing key: {e}")
 	
 	vmList.sort(key = vmListSort)
-	for vm in vmList:
-		with open("next_vms_list.txt", "a") as f:
+	
+	with open("next_vms_list.txt", "a") as f:
+		for vm in vmList:
 			f.write(f"{vm["uuid"]},{vm["name"]}\n")
 
 def main():
