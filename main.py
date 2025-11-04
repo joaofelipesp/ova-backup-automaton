@@ -40,7 +40,7 @@ def getHeader(token: str, reqType="POST"):
 # Cria um arquivo next_vms_list.txt com os nomes e UUID das VMs
 def getVmList():
 	with open("api_basic_auth_token.txt", 'r') as f:
-		token = f.read()
+		token = f.read().strip()
 
 	response = requests.request("POST", listVmsUrl, data=listVmsPayload, headers=getHeader(token), verify=False)
 	if(response.status_code != 200):
