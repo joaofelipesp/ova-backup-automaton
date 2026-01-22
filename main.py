@@ -97,7 +97,6 @@ def exportVms():
 			if(response.status_code != 200):
 				print(f"Error: API returned status code {response.status_code}")
 				print(response.text)
-				#exit(1)
 	
 	if(x == len(vmList)):
 		os.remove(vmListPath)
