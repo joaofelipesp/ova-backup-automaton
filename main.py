@@ -92,7 +92,6 @@ def exportVms():
 		if True: # Mudar para False em produção
 			print(f"URL: {getExportVmUrl(uuid)}\nHeader: {getHeader(token)}\nPayload: {getExportVmPayload(name)}\n")
 		else:
-			response: requests.Response
 			response = requests.request("POST", getExportVmUrl(uuid), data=getExportVmPayload(name), headers=getHeader(token), verify=False)
 			if(response.status_code != 200):
 				print(f"Error: API returned status code {response.status_code}")
