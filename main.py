@@ -1,9 +1,14 @@
 from datetime import datetime
+from pathlib import Path
+
 import json
+import os
 import requests
 import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+vmListPath = Path("./next_vms_list.txt")
 
 baseUrl = "https://172.17.200.70:9440/api/nutanix/v3"
 
@@ -61,12 +66,49 @@ def getVmList():
 	
 	vmList.sort(key = vmListSort)
 	
-	with open("next_vms_list.txt", "a") as f:
+	with open(vmListPath, "a") as f:
 		for vm in vmList:
 			f.write(f"{vm["uuid"]},{vm["name"]}\n")
 
+# Faz requisições para exportar as 10 próximas VMs
+def exportVms():
+	if(not vmListPath.exists()):
+		getVmList()
+		print("Requested new VM list from API.")
+	
+	with open("api_basic_auth_token.txt", 'r') as f:
+		token = f.read().strip()
+
+	vmList: list[str] = []
+	with open(vmListPath) as f:
+		for x in f:
+			vmList.append(x)
+	
+	x = min(10, len(vmList))
+	for i in range(x):
+		uuid = vmList[i].split(',')[0]
+		name = vmList[i].split(',')[1].strip()
+		
+		if True: # Mudar para False em produção
+			print(f"URL: {getExportVmUrl(uuid)}\nHeader: {getHeader(token)}\nPayload: {getExportVmPayload(name)}\n")
+		else:
+			response: requests.Response
+			response = requests.request("POST", getExportVmUrl(uuid), data=getExportVmPayload(name), headers=getHeader(token), verify=False)
+			if(response.status_code != 200):
+				print(f"Error: API returned status code {response.status_code}")
+				print(response.text)
+				#exit(1)
+	
+	if(x == len(vmList)):
+		os.remove(vmListPath)
+	else:
+		with open(vmListPath, "w") as f:
+			for i in vmList[10:]:
+				f.write(i)
+	
+
 def main():
-	getVmList()
+	exportVms()
 
 if __name__ == "__main__":
 	main()
