@@ -21,7 +21,7 @@ listVmsPayload =  """{
 }"""
 
 # Usado para ordenar a lista de VMs por nome
-def vmListSort(n):
+def vmListSort(n: dict[str, str]):
 	return str.lower(n['name'])
 
 def getExportVmUrl(uuid: str):
