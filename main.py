@@ -81,11 +81,11 @@ def exportVms():
 
 	vmList: list[str] = []
 	with open(vmListPath) as f:
-		for x in f:
-			vmList.append(x)
+		for i in f:
+			vmList.append(i)
 	
-	x = min(10, len(vmList))
-	for i in range(x):
+	numVms = min(10, len(vmList))
+	for i in range(numVms):
 		uuid = vmList[i].split(',')[0]
 		name = vmList[i].split(',')[1].strip()
 		
@@ -97,7 +97,7 @@ def exportVms():
 				print(f"Error: API returned status code {response.status_code}")
 				print(response.text)
 	
-	if(x == len(vmList)):
+	if(numVms == len(vmList)):
 		os.remove(vmListPath)
 	else:
 		with open(vmListPath, "w") as f:
